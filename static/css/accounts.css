@@ -2,11 +2,11 @@ body {
     background-image: url(../img/gravel.png);
 }
 
-. logo {
+.logo {
     font-family: 'Peralta', cursive;
 }
 
-. logo a {
+.logo a {
     color: rgba(0, 0, 0, .9);
 }
 
