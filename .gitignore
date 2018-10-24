@@ -1,2 +1,8 @@
+# 忽略idea和venv下的文件，不提交到github上
 .idea/
 venv/
+accounts/__pycache__/
+accounts/migrations/__pycache__/
+boards/__pycache__/
+boards/migrations/__pycache__/
+myproject/__pycache__/
