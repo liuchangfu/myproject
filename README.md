@@ -11,6 +11,10 @@
 
 pip install django-widget-tweaks模块
 
+3.安装requirements.txt依赖
+
+pip install -r requirements.txt
+
 3.如果想在虚拟环境下运行，请安装virtualenv模块，安装命令为
 pip install virtualenv
 
@@ -24,7 +28,7 @@ pip install virtualenv
 
 然后搭建虚拟环境：python -m venv . （注：venv 之后一个空格加上一点“.”)
 
-* 在桌面上直接建立虚拟环境文件夹 及 虚拟环境：
+* 在桌面上直接建立虚拟环境文件夹及虚拟环境：
 
 直接输入 python -m venv python_ven_demo (虚拟环境文件夹名，直接在桌面建立了文件夹，同时生成了虚拟环境）
 
