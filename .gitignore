@@ -6,3 +6,5 @@ accounts/migrations/__pycache__/
 boards/__pycache__/
 boards/migrations/__pycache__/
 myproject/__pycache__/
+test.py
+boards/templatetags/__pycache__/
