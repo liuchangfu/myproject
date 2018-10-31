@@ -49,5 +49,5 @@ def topic_posts(request, pk, topic_pk):
     return render(request, 'boards/topic_posts.html', locals())
 
 
-def reply_topic(reqeust,pk,topic_pk):
+def reply_topic(reqeust, pk, topic_pk):
     pass
