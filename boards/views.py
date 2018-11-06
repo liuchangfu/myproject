@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.http import Http404
-from .forms import NewTopicForm
+from .forms import NewTopicForm, PostForm
 from .models import Board, Topic, Post
 from django.contrib.auth.decorators import login_required
 
@@ -25,7 +25,7 @@ def board_topics(request, pk):
 @login_required
 def new_topic(request, pk):
     board = get_object_or_404(Board, pk=pk)
-    user = User.objects.first()
+    # user = User.objects.first()
     if request.method == 'POST':
         form = NewTopicForm(request.POST)
         if form.is_valid():
@@ -33,12 +33,12 @@ def new_topic(request, pk):
             topic.board = board
             topic.starter = request.user
             topic.save()
-            post = Post.objects.create(
+            Post.objects.create(
                 message=form.cleaned_data.get('message'),
                 topic=topic,
                 created_by=request.user
             )
-        return redirect('board_topics', pk=board.pk)
+        return redirect('board_topics', pk=pk, topic_pk=topic.pk)
     else:
         form = NewTopicForm()
     return render(request, 'boards/new_topic.html', locals())
@@ -49,5 +49,17 @@ def topic_posts(request, pk, topic_pk):
     return render(request, 'boards/topic_posts.html', locals())
 
 
-def reply_topic(reqeust, pk, topic_pk):
-    pass
+@login_required
+def reply_topic(request, pk, topic_pk):
+    topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.topic = topic
+            post.created_by = request.user
+            post.save()
+            return redirect('topic_posts', pk=pk, topic_pk=topic_pk)
+    else:
+        form = PostForm()
+    return render(request, 'boards/reply_topic.html', locals())
