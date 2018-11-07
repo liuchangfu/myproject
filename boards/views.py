@@ -5,6 +5,7 @@ from django.http import Http404
 from .forms import NewTopicForm, PostForm
 from .models import Board, Topic, Post
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 
 
 # Create your views here.
@@ -14,11 +15,8 @@ def home(request):
 
 
 def board_topics(request, pk):
-    # try:
-    #     board = Board.objects.get(pk=pk)
-    # except Board.DoesNotExist:
-    #     raise Http404
     board = get_object_or_404(Board, pk=pk)
+    topics = board.topics.order_by('-last_updated').annotate(replies=Count('posts') - 1)
     return render(request, 'boards/topics.html', locals())
 
 
@@ -38,7 +36,7 @@ def new_topic(request, pk):
                 topic=topic,
                 created_by=request.user
             )
-        return redirect('board_topics', pk=pk, topic_pk=topic.pk)
+        return redirect('topic_posts', pk=pk, topic_pk=topic.pk)
     else:
         form = NewTopicForm()
     return render(request, 'boards/new_topic.html', locals())
@@ -46,6 +44,8 @@ def new_topic(request, pk):
 
 def topic_posts(request, pk, topic_pk):
     topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
+    topic.views += 1
+    topic.save()
     return render(request, 'boards/topic_posts.html', locals())
 
 

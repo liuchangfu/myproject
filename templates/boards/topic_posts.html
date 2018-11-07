@@ -5,14 +5,14 @@
 {% block title %}{{ topic.subject }}{% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'home' %}">Boards</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">版块</a></li>
     <li class="breadcrumb-item"><a href="{% url 'board_topics' topic.board.pk %}">{{ topic.board.name }}</a></li>
     <li class="breadcrumb-item active">{{ topic.subject }}</li>
 {% endblock %}
 
 {% block content %}
     <div class="mb-4">
-        <a href="#" class="btn btn-primary" role="button">Reply</a>
+        <a href="#" class="btn btn-primary" role="button">回复</a>
     </div>
 
     {% for post in topic.posts.all %}
@@ -27,7 +27,7 @@
                     <div class="col-2">
                         <img src="{% static 'img/User_290120.png' %}" align="{{ post.created_by.username }}"
                              class="w-100">
-                        <small>Post:{{ post.created_by.posts.conunt }}</small>
+                        <small>贴子数:{{ post.created_by.posts.count }}</small>
                     </div>
                     <div class="col-10">
                         <div class="row mb-3">
@@ -41,7 +41,7 @@
                         {{ post.message }}
                         {% if post.created_by == user %}
                             <div class="mt-3">
-                                <a href="#" class="btn btn-primary btn-sm" role="button">Edit</a>
+                                <a href="#" class="btn btn-primary btn-sm" role="button">编辑</a>
                             </div>
                         {% endif %}
                     </div>

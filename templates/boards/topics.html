@@ -11,26 +11,26 @@
 
 {% block content %}
     <div class="mb-4">
-    <a href="{% url 'new_topic' board.pk %}" class="btn btn-primary">New Topic</a>
+    <a href="{% url 'new_topic' board.pk %}" class="btn btn-primary">新建主题</a>
     </div>
 
     <table class="table">
         <thead class="thead-inverse">
         <tr>
-            <th>Topic</th>
-            <th>Starter</th>
-            <th>Replies</th>
-            <th>Views</th>
-            <th>Last Update</th>
+            <th>主题</th>
+            <th>发布者</th>
+            <th>回复次数</th>
+            <th>查看次数</th>
+            <th>最后更新时间</th>
         </tr>
         </thead>
         <tbody>
-        {% for topic in board.topics.all %}
+        {% for topic in topics %}
             <tr>
                 <td><a href="{% url 'topic_posts' board.pk topic.pk %}">{{ topic.subject }}</a></td>
                 <td>{{ topic.starter.username }}</td>
-                <td>0</td>
-                <td>0</td>
+                <td>{{ topic.replies }}</td>
+                <td>{{ topic.views }}</td>
                 <td>{{ topic.last_updated }}</td>
             </tr>
         {% endfor %}
