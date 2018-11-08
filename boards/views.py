@@ -5,13 +5,18 @@ from django.http import Http404
 from .forms import NewTopicForm, PostForm
 from .models import Board, Topic, Post
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.db.models import Count
+from django.views.generic import UpdateView
+from django.utils import timezone
+from django.views.generic import ListView
 
 
 # Create your views here.
-def home(request):
-    boards = Board.objects.all()
-    return render(request, 'boards/home.html', locals())
+class BoardListView(ListView):
+    model = Board
+    context_object_name = 'boards'
+    template_name = 'boards/home.html'
 
 
 def board_topics(request, pk):
@@ -63,3 +68,23 @@ def reply_topic(request, pk, topic_pk):
     else:
         form = PostForm()
     return render(request, 'boards/reply_topic.html', locals())
+
+
+@method_decorator(login_required, name='dispatch')
+class PostUpdateView(UpdateView):
+    model = Post
+    fields = ('message',)
+    template_name = 'boards/edit_post.html'
+    pk_url_kwarg = 'post_pk'
+    context_object_name = 'post'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(created_by=self.request.user)
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.updated_by = self.request.user
+        post.updated_at = timezone.now()
+        post.save()
+        return redirect('topic_posts', pk=post.topic.board.pk, topic_pk=post.topic.pk)
