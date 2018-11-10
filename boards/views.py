@@ -5,12 +5,13 @@ from django.http import Http404
 from .forms import NewTopicForm, PostForm
 from .models import Board, Topic, Post
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from django.db.models import Count
 from django.views.generic import UpdateView
 from django.utils import timezone
 from django.views.generic import ListView
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
+from django.utils.decorators import method_decorator
+
 
 
 # Create your views here.
