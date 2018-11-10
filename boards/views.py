@@ -10,6 +10,7 @@ from django.db.models import Count
 from django.views.generic import UpdateView
 from django.utils import timezone
 from django.views.generic import ListView
+from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 
 
 # Create your views here.
@@ -19,10 +20,55 @@ class BoardListView(ListView):
     template_name = 'boards/home.html'
 
 
-def board_topics(request, pk):
-    board = get_object_or_404(Board, pk=pk)
-    topics = board.topics.order_by('-last_updated').annotate(replies=Count('posts') - 1)
-    return render(request, 'boards/topics.html', locals())
+# def board_topics(request, pk):
+#     board = get_object_or_404(Board, pk=pk)
+#     queryset = board.topics.order_by('-last_updated').annotate(replies=Count('posts') - 1)
+#     page = request.GET.get('page', 1)
+#
+#     paginator = Paginator(queryset, 20)
+#
+#     try:
+#         topics = paginator.page(page)
+#     except PageNotAnInteger:
+#         topics = paginator.page(1)
+#     except EmptyPage:
+#         topics = paginator.page(paginator.num_pages)
+#
+#     return render(request, 'boards/topics.html', locals())
+
+
+class TopicListView(ListView):
+    model = Topic
+    context_object_name = 'topics'
+    template_name = 'boards/topics.html'
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        kwargs['board'] = self.board
+        return super().get_context_data(**kwargs)
+
+    def get_queryset(self):
+        self.board = get_object_or_404(Board, pk=self.kwargs.get('pk'))
+        queryset = self.board.topics.order_by('-last_updated').annotate(replies=Count('posts') - 1)
+        return queryset
+
+
+class PostListView(ListView):
+    model = Post
+    context_object_name = 'posts'
+    template_name = 'boards/topic_posts.html'
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        self.topic.views += 1
+        self.topic.save()
+        kwargs['topic'] = self.topic
+        return super().get_context_data(**kwargs)
+
+    def get_queryset(self):
+        self.topic = get_object_or_404(Topic, board__pk=self.kwargs.get('pk'), pk=self.kwargs.get('topic_pk'))
+        queryset = self.topic.posts.order_by('created_at')
+        return queryset
 
 
 @login_required

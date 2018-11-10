@@ -21,13 +21,16 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+
     url(r'^$', views.BoardListView.as_view(), name='home'),
 
-    url(r'^boards/(?P<pk>\d+)/$', views.board_topics, name='board_topics'),
+    # url(r'^boards/(?P<pk>\d+)/$', views.board_topics, name='board_topics'),
     url(r'^boards/(?P<pk>\d+)/new/$', views.new_topic, name='new_topic'),
 
     url(r'^signup/$', accounts_views.signup, name='signup'),
+
     url(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
+
     url(r'^login/$', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
 
     url(r'^reset/$', auth_views.PasswordResetView.as_view(template_name='accounts/password_reset.html',
@@ -58,4 +61,8 @@ urlpatterns = [
 
     url(r'^boards/(?P<pk>\d+)/topics/(?P<topic_pk>\d+)/posts/(?P<post_pk>\d+)/edit/$', views.PostUpdateView.as_view(),
         name='edit_post'),
+
+    url(r'^boards/(?P<pk>\d+)/$', views.TopicListView.as_view(), name='board_topics'),
+
+    url(r'^boards/(?P<pk>\d+)/topics/(?P<topic_pk>\d+)/$', views.PostListView.as_view(), name='topic_posts'),
 ]
